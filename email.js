@@ -10,7 +10,7 @@ const fs = require('fs');
 const title = 'Menu for ' + moment().format('M/D/Y');
 
 const printMenu = menu => {
-  return '<h3>'+title+'</h3>' +
+  return '<h3>'+title+'</h3><a href="https://www.edamam.com/">www.edamam.com</a><br><br> ' +
     _.map(menu, item => {
       return'<b>'+item.day+'</b>' +
         '<p>'+item.name+'</p>' +
