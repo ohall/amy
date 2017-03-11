@@ -8,8 +8,8 @@ const _ = require('lodash');
 const fs = require('fs');
 const email = require('./email');
 
-const daysInWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const foods = ['chicken', 'beef', 'taco', 'crockpot', 'pasta', 'salad', 'ramen'];
+const recipeNumbers = _.range(1,11);
+const foods = ['chicken', 'beef', 'taco', 'crockpot', 'pasta', 'quick', 'easy', 'casserole'];
 
 let menu = [];
 let list = [];
@@ -54,10 +54,10 @@ const getMenuItem = (day,index, food, callback) => {
   req.end();
 };
 
-_.each(daysInWeek, (day, index) => {
+_.each(recipeNumbers, (day, index) => {
   getMenuItem(day, index, _.sample(foods), e => {
     if(e){ console.log( e );}
-    if( menu.length === daysInWeek.length ){
+    if( menu.length === recipeNumbers.length ){
       menu = _.sortBy(menu, item => item.index);
       email(error, menu);
       fs.writeFileSync('menu', JSON.stringify( menu, null, 2) );
