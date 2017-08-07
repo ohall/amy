@@ -7,24 +7,19 @@ const https = require('https');
 const _ = require('lodash');
 const fs = require('fs');
 const email = require('./email');
-
-const recipeNumbers = _.range(1,11);
-const foods = ['chicken', 'beef', 'taco', 'crockpot', 'pasta', 'quick', 'easy', 'casserole'];
-
-let menu = [];
-let list = [];
+const QUERY = 'chicken&beef&taco&crockpot&pasta&quick&easy&casserole';
 
 const error = e => { console.error(e); };
 
-const getMenuItem = (day,index, food, callback) => {
+const getMenuItem = (queryParam, callback) => {
 
   const options = {
     hostname: 'api.edamam.com',
     port: 443,
-    path: '/search?q=' + food +
+    path: '/search?q=' + queryParam +
     '&app_id=' + process.env.EDAMAM_ID +
     '&app_key=' + process.env.EDAMAM_KEY +
-    '&from=1&to=50',
+    '&from=1&to=20',
     method: 'GET'
   };
 
@@ -35,18 +30,15 @@ const getMenuItem = (day,index, food, callback) => {
       const hits = JSON.parse(data).hits;
       const wanted = _.map(hits, hit => {
         return {
-          index: index,
-          day: day,
           name: hit.recipe.label,
           url: hit.recipe.url,
           ingredients: hit.recipe.ingredientLines
         }
       });
 
-      const chosen = _.sample(wanted);
-      menu.push(chosen);
-      list = _.concat(list, chosen.ingredients);
-      callback();
+      const chosen = _.sampleSize(wanted, 10);
+      const list = _.concat([], chosen.ingredients);
+      callback(null, chosen, list);
     });
   });
 
@@ -54,15 +46,11 @@ const getMenuItem = (day,index, food, callback) => {
   req.end();
 };
 
-_.each(recipeNumbers, (day, index) => {
-  getMenuItem(day, index, _.sample(foods), e => {
-    if(e){ console.log( e );}
-    if( menu.length === recipeNumbers.length ){
-      menu = _.sortBy(menu, item => item.index);
-      email(error, menu);
-      fs.writeFileSync('menu', JSON.stringify( menu, null, 2) );
-      fs.writeFileSync('list', JSON.stringify( list, null, 2) );
-    }
-  });
+getMenuItem(QUERY, (e, menu, shoppingList) => {
+  if(e){ console.log( e );}
+  email(error, menu);
+  fs.writeFileSync('menu', JSON.stringify( menu, null, 2) );
+  fs.writeFileSync('list', JSON.stringify( shoppingList, null, 2) );
 });
+
 
