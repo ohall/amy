@@ -40,8 +40,8 @@ const getMenuItem = (day,index, food, callback) => {
           index: index,
           day: day,
           name: _.get(hit, 'recipe.label'),
-          url: _.get(hit, 'hit.recipe.url'),
-          ingredients: _.get(hit, 'hit.recipe.ingredientLines')
+          url: _.get(hit, 'recipe.url'),
+          ingredients: _.get(hit, 'recipe.ingredientLines')
         }
       });
 
@@ -68,6 +68,6 @@ _.each(recipeNumbers, (day, index) => {
         fs.writeFileSync('list', JSON.stringify( list, null, 2) );
       }
     });
-  }, 60 * SEC); // run one every minute to get around API limit
+  }, 30 * SEC); // run one every half minute to get around API limit
 });
 
