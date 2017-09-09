@@ -10,6 +10,7 @@ const email = require('./email');
 
 const recipeNumbers = _.range(1,11);
 const foods = ['chicken', 'beef', 'taco', 'crockpot', 'pasta', 'quick', 'easy', 'casserole'];
+const SEC = 1000;
 
 let menu = [];
 let list = [];
@@ -22,8 +23,9 @@ const getMenuItem = (day,index, food, callback) => {
     hostname: 'api.edamam.com',
     port: 443,
     path: '/search?q=' + food +
-    '&app_id=' + process.env.EDAMAM_ID +
-    '&app_key=' + process.env.EDAMAM_KEY +
+    // +
+    // '&app_id=' + process.env.EDAMAM_ID +
+    // '&app_key=' + process.env.EDAMAM_KEY, // not sure what's going on here
     '&from=1&to=50',
     method: 'GET'
   };
@@ -37,13 +39,14 @@ const getMenuItem = (day,index, food, callback) => {
         return {
           index: index,
           day: day,
-          name: hit.recipe.label,
-          url: hit.recipe.url,
-          ingredients: hit.recipe.ingredientLines
+          name: _.get(hit, 'recipe.label'),
+          url: _.get(hit, 'hit.recipe.url'),
+          ingredients: _.get(hit, 'hit.recipe.ingredientLines')
         }
       });
 
       const chosen = _.sample(wanted);
+      console.log( chosen.name );
       menu.push(chosen);
       list = _.concat(list, chosen.ingredients);
       callback();
@@ -55,14 +58,16 @@ const getMenuItem = (day,index, food, callback) => {
 };
 
 _.each(recipeNumbers, (day, index) => {
-  getMenuItem(day, index, _.sample(foods), e => {
-    if(e){ console.log( e );}
-    if( menu.length === recipeNumbers.length ){
-      menu = _.sortBy(menu, item => item.index);
-      email(error, menu);
-      fs.writeFileSync('menu', JSON.stringify( menu, null, 2) );
-      fs.writeFileSync('list', JSON.stringify( list, null, 2) );
-    }
-  });
+  setTimeout(() => {
+    getMenuItem(day, index, _.sample(foods), e => {
+      if(e){ console.log( e );}
+      if( menu.length === recipeNumbers.length ){
+        menu = _.sortBy(menu, item => item.index);
+        email(error, menu);
+        fs.writeFileSync('menu', JSON.stringify( menu, null, 2) );
+        fs.writeFileSync('list', JSON.stringify( list, null, 2) );
+      }
+    });
+  }, 60 * SEC); // run one every minute to get around API limit
 });
 
