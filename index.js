@@ -57,17 +57,22 @@ const getMenuItem = (day,index, food, callback) => {
   req.end();
 };
 
-_.each(recipeNumbers, (day, index) => {
-  setTimeout(() => {
+function makeMenu() {
+  if (!_.isEmpty(recipeNumbers)){
+    const index = recipeNumbers.pop();
+    const day = index + 1;
     getMenuItem(day, index, _.sample(foods), e => {
       if(e){ console.log( e );}
-      if( menu.length === recipeNumbers.length ){
+      if( menu.length === 10 ){
         menu = _.sortBy(menu, item => item.index);
         email(error, menu);
         fs.writeFileSync('menu', JSON.stringify( menu, null, 2) );
         fs.writeFileSync('list', JSON.stringify( list, null, 2) );
+      } else {
+        setTimeout(makeMenu, 30 * SEC); // run every 30s to spare API limit
       }
     });
-  }, 30 * SEC); // run one every half minute to get around API limit
-});
+  }
+}
 
+makeMenu();
