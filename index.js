@@ -22,10 +22,9 @@ const getMenuItem = (day,index, food, callback) => {
   const options = {
     hostname: 'api.edamam.com',
     port: 443,
-    path: '/search?q=' + food +
-    // +
-    // '&app_id=' + process.env.EDAMAM_ID +
-    // '&app_key=' + process.env.EDAMAM_KEY, // not sure what's going on here
+    path: '/search?q=' + food +'&app_id=' +
+    process.env.EDAMAM_ID + '&app_key=' +
+    process.env.EDAMAM_KEY +
     '&from=1&to=50',
     method: 'GET'
   };
