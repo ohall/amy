@@ -7,8 +7,9 @@ const https = require('https');
 const _ = require('lodash');
 const fs = require('fs');
 const email = require('./email');
+const MENU_LENGTH = 20;
 
-const recipeNumbers = _.range(1,21);
+const recipeNumbers = _.range(1, MENU_LENGTH + 1);
 const foods = ['chicken', 'beef', 'taco', 'crockpot', 'pasta', 'quick', 'easy', 'casserole'];
 const SEC = 1000;
 
@@ -62,7 +63,7 @@ function makeMenu() {
     const day = index + 1;
     getMenuItem(day, index, _.sample(foods), e => {
       if(e){ console.log( e );}
-      if( menu.length === 10 ){
+      if( menu.length === MENU_LENGTH ){
         menu = _.sortBy(menu, item => item.index);
         email(error, menu);
         fs.writeFileSync('menu', JSON.stringify( menu, null, 2) );
