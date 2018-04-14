@@ -8,7 +8,7 @@ const _ = require('lodash');
 const fs = require('fs');
 const email = require('./email');
 
-const recipeNumbers = _.range(1,11);
+const recipeNumbers = _.range(1,21);
 const foods = ['chicken', 'beef', 'taco', 'crockpot', 'pasta', 'quick', 'easy', 'casserole'];
 const SEC = 1000;
 
