@@ -1,5 +1,5 @@
 {
   "menuLength": 20,
   "foods": ["chicken", "beef", "taco", "crockpot", "pasta", "quick", "easy", "casserole"],
-  "requestDelayMS": 30000
+  "requestDelayMS": 10000
 }
