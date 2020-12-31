@@ -9,7 +9,7 @@ USAGE:
 Start the express server with environment variables.
 Get Edmaman ID and KEY from https://developer.edamam.com/
 ```
-FROM="<from email>" TO=<"to email>" EMAIL="<sender gmail username>" AUTH="<sender gmail password>" EDAMAM_ID="<api app id>" EDAMAM_KEY="<api auth>" node index.js
+FROM="<from email>" TO=<"to email>" EMAIL="<sender gmail username>" AUTH="<sender gmail password>" EDAMAM_ID="<api app id>" EDAMAM_KEY="<api auth>" ./node_modules/.bin/nodemon index.js
 
 ```
 
